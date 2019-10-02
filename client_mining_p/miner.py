@@ -23,8 +23,7 @@ if __name__ == '__main__':
 
     def proof_of_work(last_proof, block):
         block_string = json.dumps(block, sort_keys=True).encode()
-        print('block string -------------------------')
-        print(block_string)
+
         proof = last_proof
         while valid_proof(block_string, proof) is False:
             proof += 1
@@ -40,9 +39,11 @@ if __name__ == '__main__':
         if response:
             print('Successful retrieval of last block.')
             last_block = response.json()['last_block']
+            print('\n last_block \n')
             print(last_block)
             proof = last_block['proof']
-            print('starting proof: ', proof)
+            print('\n proof \n')
+            print(proof)
 
             valid_proof = proof_of_work(proof, last_block)
             # TODO: When found, POST it to the server {"proof": new_proof}
@@ -50,12 +51,12 @@ if __name__ == '__main__':
             post_response = requests.post(f'{node}/mine', json={'proof': valid_proof})
             if post_response:
                 print('Successful proof post')
-                print(post_response.json())
+                coins_mined += 1
+                print('Total coins mined: ', coins_mined)
             else:
-                print(post_response.status_code)
+                print('Failure to mine a coin')
                 print(post_response.json())
                 break
-
         else:
             print('Error while retrieving last block.')
             break

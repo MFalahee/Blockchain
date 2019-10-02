@@ -151,20 +151,12 @@ blockchain = Blockchain()
 
 @app.route('/mine', methods=['POST'])
 def mine():
-    # print('TESTING HERE -------')
-    proof_to_validate = request.get_json()
-    # print(proof_to_validate)
-    # print('---------------')
+    proof_to_validate = request.get_json()['proof']
 
     # Check that the required fields are in the POST'ed data
     # Just to make sure the request is valid at all before we get started
-    print('last_block')
-    print(blockchain.last_block)
-    print('----------------------')
 
     block_string = json.dumps(blockchain.last_block, sort_keys=True).encode()
-    print('block string -------------------------')
-    print(block_string)
     result = blockchain.valid_proof(block_string, proof_to_validate)
 
     if result is False:
