@@ -1,6 +1,7 @@
 import hashlib
 import json
 import requests
+import time
 
 import sys
 
@@ -19,7 +20,7 @@ if __name__ == '__main__':
         guess = f'{block_string}{proof}'.encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
 
-        return guess_hash[:3] == "000"
+        return guess_hash[:6] == "000000"
 
     def proof_of_work(last_proof, block):
         block_string = json.dumps(block, sort_keys=True).encode()
@@ -34,25 +35,22 @@ if __name__ == '__main__':
 
     # Run forever until interrupted
     while True:
+        print('Total coins mined: ', coins_mined)
         # TODO: Get the last proof from the server and look for a new one
         response = requests.get(f'{node}/last-block')
         if response:
-            print('Successful retrieval of last block.')
             last_block = response.json()['last_block']
-            print('\n last_block \n')
-            print(last_block)
             proof = last_block['proof']
-            print('\n proof \n')
-            print(proof)
 
-            valid_proof = proof_of_work(proof, last_block)
+            now = time.time()
+            valid_proof_to_check = proof_of_work(proof, last_block)
+            
             # TODO: When found, POST it to the server {"proof": new_proof}
-            print('valid_proof', valid_proof)
-            post_response = requests.post(f'{node}/mine', json={'proof': valid_proof})
+            post_response = requests.post(f'{node}/mine', json={'proof': valid_proof_to_check})
             if post_response:
                 print('Successful proof post')
+                print(post_response.json())
                 coins_mined += 1
-                print('Total coins mined: ', coins_mined)
             else:
                 print('Failure to mine a coin')
                 print(post_response.json())
@@ -60,9 +58,5 @@ if __name__ == '__main__':
         else:
             print('Error while retrieving last block.')
             break
-        
-        # TODO: If the server responds with 'New Block Forged'
-        # add 1 to the number of coins mined and print it.  Otherwise,
-        # print the message from the server.
 
 
