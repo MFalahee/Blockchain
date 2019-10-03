@@ -171,20 +171,28 @@ def mine():
     last_block_string = json.dumps(last_block, sort_keys=True).encode()
 
 
-    submitted_proof = request.get_json()['proof']
+    values = request.get_json()
+    submitted_proof = values['proof']
+    miner_id = values['id']
+
+    required = ['proof', 'id']
+    if not all(k in values for k in required):
+        return 'Error: Missing request fields.', 400
+        
     if not blockchain.valid_proof(last_block_string, submitted_proof):
         # TODO: Send different message if proof was valid but late
         response = {
             'message': "Proof was invalid or submitted too late"
         }
         return jsonify(response), 400
+
     # We must receive a reward for finding the proof.
     # The sender is "0" to signify that this node has mine a new coin
     # The recipient is the current node, it did the mining!
     # The amount is 1 coin as a reward for mining the next block
     blockchain.new_transaction(
         sender="0",
-        recipient=node_identifier,
+        recipient= miner_id,
         amount=1,
     )
     # Forge the new Block by adding it to the chain
