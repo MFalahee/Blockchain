@@ -33,10 +33,13 @@ if __name__ == '__main__':
 
     coins_mined = 0
     miner_id = uuid.uuid1().hex
+    total_time_mining = 0
 
     # Run forever until interrupted
     while True:
-        print('Total coins mined: ', coins_mined)
+        time_start = time.time()
+        print('Total coins mined:', coins_mined)
+        print('Total time spent mining:', round(total_time_mining, 2), 'seconds')
         # TODO: Get the last proof from the server and look for a new one
         response = requests.get(f'{node}/last_block')
         if response:
@@ -52,6 +55,10 @@ if __name__ == '__main__':
                 print('Successful proof post')
                 print(post_response.json())
                 coins_mined += 1
+                time_finish = time.time()
+                time_elapsed = (time_finish - time_start)
+                total_time_mining += time_elapsed
+                print('Time spent mining that coin: ', round(time_elapsed, 2), 'seconds')
             else:
                 print('Failure to mine a coin')
                 print(post_response.json())

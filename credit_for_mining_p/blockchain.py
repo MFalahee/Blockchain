@@ -178,7 +178,7 @@ def mine():
     required = ['proof', 'id']
     if not all(k in values for k in required):
         return 'Error: Missing request fields.', 400
-        
+
     if not blockchain.valid_proof(last_block_string, submitted_proof):
         # TODO: Send different message if proof was valid but late
         response = {
