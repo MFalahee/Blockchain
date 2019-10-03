@@ -2,7 +2,7 @@ import hashlib
 import json
 import requests
 import time
-
+import uuid
 import sys
 
 
@@ -32,6 +32,7 @@ if __name__ == '__main__':
         return proof
 
     coins_mined = 0
+    miner_id = uuid.uuid1().hex
 
     # Run forever until interrupted
     while True:
@@ -46,7 +47,7 @@ if __name__ == '__main__':
             valid_proof_to_check = proof_of_work(proof, last_block)
             
             # TODO: When found, POST it to the server {"proof": new_proof}
-            post_response = requests.post(f'{node}/mine', json={'proof': valid_proof_to_check})
+            post_response = requests.post(f'{node}/mine', json={'proof': valid_proof_to_check, 'id': miner_id})
             if post_response:
                 print('Successful proof post')
                 print(post_response.json())
