@@ -20,7 +20,7 @@ if __name__ == '__main__':
         guess = f'{block_string}{proof}'.encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
 
-        return guess_hash[:6] == "000000"
+        return guess_hash[:5] == "00000"
 
     def proof_of_work(last_proof, block):
         block_string = json.dumps(block, sort_keys=True).encode()
@@ -37,7 +37,7 @@ if __name__ == '__main__':
     while True:
         print('Total coins mined: ', coins_mined)
         # TODO: Get the last proof from the server and look for a new one
-        response = requests.get(f'{node}/last-block')
+        response = requests.get(f'{node}/last_block')
         if response:
             last_block = response.json()['last_block']
             proof = last_block['proof']
