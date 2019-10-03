@@ -20,7 +20,7 @@ if __name__ == '__main__':
         guess = f'{block_string}{proof}'.encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
 
-        return guess_hash[:5] == "00000"
+        return guess_hash[:6] == "000000"
 
     def proof_of_work(last_proof, block):
         block_string = json.dumps(block, sort_keys=True).encode()
@@ -54,7 +54,6 @@ if __name__ == '__main__':
             else:
                 print('Failure to mine a coin')
                 print(post_response.json())
-                break
         else:
             print('Error while retrieving last block.')
             break

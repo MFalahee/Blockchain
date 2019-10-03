@@ -127,7 +127,7 @@ class Blockchain(object):
         guess = f'{block_string}{proof}'.encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
         # TODO: Change back to six zeroes
-        return guess_hash[:5] == "00000"
+        return guess_hash[:6] == "000000"
     def valid_chain(self, chain):
         """
         Determine if a given blockchain is valid.  We'll need this
